@@ -8,14 +8,20 @@
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "scheme": "qrapp",
+    
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSCameraUsageDescription": "This app requires camera access to scan QR codes."
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
+  
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.dcoll7.qr_app"
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -30,6 +36,11 @@
         }
       ],
       "react-native-edge-to-edge"
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "f5d5772c-d0f9-41ca-8598-6170dcaa23e5"
+      }
+    }
   }
 }
