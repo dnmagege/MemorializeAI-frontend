@@ -279,7 +279,7 @@ export function CreateProfile() {
 
 const styles = StyleSheet.create({
   myElement: {
-    height: 200, // ✅ Set height to 200px
+    height: 100, // ✅ Set height to 200px
   }, container: { flex: 1, justifyContent: "center", padding: 20, backgroundColor: "#fff" },
   title: { fontSize: 24, fontWeight: "bold", marginBottom: 20, textAlign: "center" },
   imagePicker: { width: 150, height: 150, borderRadius: 75, backgroundColor: "#ddd", justifyContent: "center", alignItems: "center", alignSelf: "center", marginBottom: 20, overflow: "hidden" },
