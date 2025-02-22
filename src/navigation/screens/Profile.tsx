@@ -28,7 +28,8 @@ export function Profile() {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const response = await fetch(`http://192.168.56.1:5000/memorial/${id}`);
+        // const response = await fetch(`http://192.168.56.1:5000/memorial/${id}`);
+        const response = await fetch(`https://memorializeai-backend.onrender.com/memorial/${id}`);
         if (!response.ok) {
           throw new Error(`HTTP Error! Status: ${response.status}`);
         }

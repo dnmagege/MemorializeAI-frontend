@@ -16,14 +16,11 @@ export function Home() {
     }
 
     try {
-      // Fetch profile based on name and DOD
       // const response = await fetch(
-      //   `http://192.168.56.1:5000/search-profile?name=${name}&dod=${dod}`
-        
+      //   `http://192.168.56.1:5000/search-profile?name=${name}&death_date=${dod}`
       // );
-      const response = await fetch(
-        `http://192.168.56.1:5000/search-profile?name=${name}&death_date=${dod}`
-      );
+      const response = await fetch(`https://memorializeai-backend.onrender.com/search-profile?name=${name}&death_date=${dod}`);
+
       console.log("🔍 Searching Profile with:", { name, dod });
 
 

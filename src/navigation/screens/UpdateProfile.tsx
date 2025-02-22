@@ -2,8 +2,10 @@ import React, { useEffect, useState } from "react";
 import { View, TextInput, Button, StyleSheet, Text, Alert } from "react-native";
 import { useRoute, useNavigation } from "@react-navigation/native";
 
-const API_BASE_URL = "http://192.168.56.1:5000";  // ✅ Use the updated API
-const APP_BASE_URL = "http://192.168.56.1:8081";  // ✅ Ensure QR codes link to the app
+// const API_BASE_URL = "http://192.168.56.1:5000";  // ✅ Use the updated API
+const API_BASE_URL = "https://memorializeai-backend.onrender.com";
+
+// const APP_BASE_URL = "http://192.168.56.1:8081";  // ✅ Ensure QR codes link to the app
 
 export function UpdateProfile() {
   const route = useRoute();
@@ -67,7 +69,9 @@ export function UpdateProfile() {
     console.log("📩 Sending Update Request:", updatedData);
   
     try {
-      const response = await fetch(`http://192.168.56.1:5000/update-memorial/${id}`, {
+      // const response = await fetch(`http://192.168.56.1:5000/update-memorial/${id}`, {
+      const response = await fetch(`${API_BASE_URL}/update-memorial/${id}`, {
+
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

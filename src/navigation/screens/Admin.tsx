@@ -11,8 +11,13 @@ import {
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";  // 👈 Import navigation
 
+
+
 // ✅ Define API base URL
-const API_URL = "http://192.168.56.1:5000"; // ✅ Change this if needed
+// const API_URL = "http://192.168.56.1:5000";
+const API_URL = "https://memorializeai-backend.onrender.com";
+
+
 
 // ✅ Define Memorial Type
 type Memorial = {

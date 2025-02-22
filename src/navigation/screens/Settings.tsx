@@ -3,12 +3,18 @@ import { View, Text, TextInput, Button, StyleSheet, Image, TouchableOpacity, Ale
 import * as ImagePicker from "expo-image-picker";
 import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
-import { OPENAI_API_KEY } from "@env"; // Import API key from .env
-console.log("API Key Loaded:", OPENAI_API_KEY);
+// import { OPENAI_API_KEY } from "@env"; // Import API key from .env
+// console.log("API Key Loaded:", OPENAI_API_KEY);
+
+// interface OpenAIResponse {
+//   choices: { message: { content: string } }[];
+// }
 
 
-const API_BASE_URL = "http://192.168.56.1:5000";  
-const APP_BASE_URL = "http://192.168.56.1:8081";  
+// const API_BASE_URL = "http://192.168.56.1:5000";  
+const API_BASE_URL = "https://memorializeai-backend.onrender.com";
+
+// const APP_BASE_URL = "http://192.168.56.1:8081";  
 
 
 interface OpenAIResponse {
@@ -40,18 +46,33 @@ export function CreateProfile() {
     }
   };
 
+  const getApiKey = async () => {
+    try {
+      // const response = await fetch("https://memorializeai-backend.onrender.com/get-openai-key");
+      const response = await fetch(`${API_BASE_URL}/get-openai-key`); // ✅ Uses defined API base URL
+
+      const data = await response.json();
+  
+      if (!data.api_key) {
+        throw new Error("API key not found in backend response");
+      }
+  
+      return data.api_key.trim(); // Ensure no extra spaces
+    } catch (error) {
+      console.error("❌ Error fetching OpenAI key:", error);
+      return "";
+    }
+  };
+  
+
   // ✅ AI-Powered Biography Generator
   const [briefInfo, setBriefInfo] = useState(""); // ✅ New state for brief info
   const generateBiography = async () => {
-    if (!name.trim() || !dob.trim() || !dod.trim() || !briefInfo.trim()) {  
-      Alert.alert("Error", "Please enter the name, date of birth, date of death, and a brief description.");  
-      console.log("❌ Missing required fields: Name, DOB, DOD, or Brief Info.");  
-      return;  
+    const apiKey = await getApiKey();
+    if (!apiKey) {
+      Alert.alert("Error", "API Key is missing");
+      return;
     }
-  
-    console.log("⏳ Generating biography for:", { name, dob, dod, briefInfo });
-  
-    setLoading(true);
   
     try {
       const response = await axios.post<OpenAIResponse>(
@@ -60,32 +81,95 @@ export function CreateProfile() {
           model: "gpt-3.5-turbo",
           messages: [
             { role: "system", content: "You are an obituary writer. Write a respectful and heartfelt biography." },
-            { 
-              role: "user", 
-              content: `Write a short but meaningful biography for ${name}, born on ${dob}, passed away on ${dod}. 
-                        Here are some details about them: ${briefInfo.trim()}. 
-                        Keep it compassionate and inspiring.`
-            }
+            { role: "user", content: `Write a biography for ${name}.` }
           ],
           max_tokens: 250,
         },
         {
-          headers: { Authorization: `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
+          headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
         }
       );
   
-      const generatedBio = response.data.choices[0].message.content;
-      console.log("✅ AI-Generated Biography:", generatedBio);
-  
-      setBiography(generatedBio);  // ✅ Set AI output into the second input field
-  
+      setBiography(response.data.choices[0].message.content);
     } catch (error) {
-      console.error("❌ AI Error:", error);
-      Alert.alert("Error", "Could not generate biography.");
-    } finally {
-      setLoading(false);
+      console.error("❌ AI API Error:", error);
+      Alert.alert("Error", "Failed to generate biography.");
     }
+    
   };
+  
+
+  
+  
+  // const generateBiography = async () => {
+  //   if (!name.trim() || !dob.trim() || !dod.trim() || !briefInfo.trim()) {  
+  //     Alert.alert("Error", "Please enter the name, date of birth, date of death, and a brief description.");  
+  //     console.log("❌ Missing required fields: Name, DOB, DOD, or Brief Info.");  
+  //     return;  
+  //   }
+  
+  //   console.log("⏳ Generating biography for:", { name, dob, dod, briefInfo });
+  
+  //   setLoading(true);
+  
+  //   try {
+  //     const response = await axios.post<OpenAIResponse>(
+  //       "https://api.openai.com/v1/chat/completions",
+  //       {
+  //         model: "gpt-3.5-turbo",
+  //         messages: [
+  //           { role: "system", content: "You are an obituary writer. Write a respectful and heartfelt biography." },
+  //           { 
+  //             role: "user", 
+  //             content: `Write a short but meaningful biography for ${name}, born on ${dob}, passed away on ${dod}. 
+  //                       Here are some details about them: ${briefInfo.trim()}. 
+  //                       Keep it compassionate and inspiring.`
+  //           }
+  //         ],
+  //         max_tokens: 250,
+  //       },
+  //       {
+
+  //         // headers: { Authorization: `Bearer ${OPENAI_API_KEY}`, "Content-Type": "application/json" },
+  //         headers: { 
+  //           Authorization: `Bearer ${await getApiKey()}`, 
+  //           "Content-Type": "application/json" 
+  //         },
+  //       }
+  //     );
+
+      
+  
+  //     const generatedBio = response.data.choices[0].message.content;
+  //     console.log("✅ AI-Generated Biography:", generatedBio);
+  
+  //     setBiography(generatedBio);  // ✅ Set AI output into the second input field
+  
+  //   } catch (error) {
+  //     console.error("❌ AI Error:", error);
+  //     Alert.alert("Error", "Could not generate biography.");
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+  
+
+  // //newlyadded for the getapikey
+  // const getApiKey = async () => {
+  //   try {
+  //     const response = await fetch("https://memorializeai-backend.onrender.com/get-openai-key");
+  //     const data = await response.json();
+  
+  //     if (!data.api_key) {
+  //       throw new Error("API key not found in backend response");
+  //     }
+  
+  //     return data.api_key;
+  //   } catch (error) {
+  //     console.error("❌ Error fetching OpenAI key:", error);
+  //     return "";
+  //   }
+  // };
   
   
   
@@ -119,7 +203,9 @@ export function CreateProfile() {
       const result = await response.json();
   
       if (result.success) {
-        const qrCodeURL = `${APP_BASE_URL}/@${result.id}`;
+        // const qrCodeURL = `${API_BASE_URL}/@${result.id}`;
+        const qrCodeURL = `${API_BASE_URL}/memorial/${result.id}`;
+
   
         await fetch(`${API_BASE_URL}/update-memorial/${result.id}`, {
           method: "PUT",
